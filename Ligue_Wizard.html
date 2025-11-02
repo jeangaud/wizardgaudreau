@@ -1,0 +1,445 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧙‍♂️ Wizard Ligue - Tableaux de Pointage 🧙‍♀️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2::before {
+            content: '📊';
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: #333;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: #856404;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            text-align: center;
+            color: #000;
+        }
+        
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9ff;
+            transform: scale(1.01);
+            box-shadow: 0 2px 5px rgba(102, 126, 234, 0.2);
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #fafbff;
+        }
+        
+        tbody tr:nth-child(even):hover {
+            background: #f8f9ff;
+        }
+        
+        /* Styles spéciaux pour le tableau de classement */
+        .ranking-table tbody tr:first-child {
+            background: linear-gradient(90deg, #ffeba7 0%, #fff6cc 100%);
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .ranking-table tbody tr:first-child:hover {
+            background: linear-gradient(90deg, #ffeba7 0%, #fff6cc 100%);
+        }
+        
+        .ranking-table tbody tr:nth-child(2) {
+            background: linear-gradient(90deg, #e0e0e0 0%, #f4f4f4 100%);
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .ranking-table tbody tr:nth-child(2):hover {
+            background: linear-gradient(90deg, #e0e0e0 0%, #f4f4f4 100%);
+        }
+        
+        .ranking-table tbody tr:nth-child(3) {
+            background: linear-gradient(90deg, #e6bf99 0%, #f4d3be 100%);
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .ranking-table tbody tr:nth-child(3):hover {
+            background: linear-gradient(90deg, #e6bf99 0%, #f4d3be 100%);
+        }
+        
+        .number-cell {
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .ranking-table .number-cell {
+            color: #000;
+        }
+        
+        .winner-cell {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .score-cell {
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .rank-badge {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .timestamp {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            h2 {
+                font-size: 1.4em;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+        
+        /* Animation au chargement */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            animation: slideDown 0.6s ease-out;
+        }
+        
+        /* Style pour les cellules de tiret */
+        .absent-cell {
+            text-align: center;
+            color: #ccc;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧙‍♂️ Wizard Ligue - Tableaux de Pointage 🧙‍♀️</h1>
+        <div class="subtitle">Généré le dimanche 2 novembre 2025 à 13:08</div>
+        
+        <!-- Section 1: Classement -->
+        <div class="section">
+            <h2>Classement Général de la Ligue</h2>
+            <div class="info-box">
+                <strong>Formule du Score Final :</strong> Moyenne des 10 dernières parties + Bonus de Participation + Master Points (MP)
+            </div>
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th>Rang</th>
+                        <th>Joueur</th>
+                        <th>Score Final</th>
+                        <th>MP</th>
+                        <th>Moy. 10</th>
+                        <th>Bonus Part.</th>
+                        <th>PW (Global)</th>
+                        <th>PT (Global)</th>
+                    </tr>
+                </thead>
+                <tbody>                    <tr>
+                        <td class="number-cell"><span class="rank-badge"></span></td>
+                        <td><strong>Sonia</strong></td>
+                        <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>376.59</strong></td>
+                        <td class="number-cell">115</td>
+                        <td class="number-cell">256</td>
+                        <td class="number-cell">5.59</td>
+                        <td class="number-cell">19,8 %</td>
+                        <td class="number-cell">10550</td>
+                    </tr>                    <tr>
+                        <td class="number-cell"><span class="rank-badge"></span></td>
+                        <td><strong>Jean</strong></td>
+                        <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>325.59</strong></td>
+                        <td class="number-cell">95</td>
+                        <td class="number-cell">225</td>
+                        <td class="number-cell">5.59</td>
+                        <td class="number-cell">16,3 %</td>
+                        <td class="number-cell">9740</td>
+                    </tr>                    <tr>
+                        <td class="number-cell"><span class="rank-badge"></span></td>
+                        <td><strong>Martin</strong></td>
+                        <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>315.94</strong></td>
+                        <td class="number-cell">116</td>
+                        <td class="number-cell">195</td>
+                        <td class="number-cell">4.94</td>
+                        <td class="number-cell">31,6 %</td>
+                        <td class="number-cell">9100</td>
+                    </tr>                    <tr>
+                        <td class="number-cell"><span class="rank-badge"></span></td>
+                        <td><strong>Alain</strong></td>
+                        <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>298.20</strong></td>
+                        <td class="number-cell">99</td>
+                        <td class="number-cell">194</td>
+                        <td class="number-cell">5.20</td>
+                        <td class="number-cell">22,5 %</td>
+                        <td class="number-cell">8980</td>
+                    </tr>                    <tr>
+                        <td class="number-cell"><span class="rank-badge"></span></td>
+                        <td><strong>Arsène</strong></td>
+                        <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>280.81</strong></td>
+                        <td class="number-cell">79</td>
+                        <td class="number-cell">197</td>
+                        <td class="number-cell">4.81</td>
+                        <td class="number-cell">17,6 %</td>
+                        <td class="number-cell">7310</td>
+                    </tr>                    <tr>
+                        <td class="number-cell"><span class="rank-badge"></span></td>
+                        <td><strong>Evelyne</strong></td>
+                        <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>131.39</strong></td>
+                        <td class="number-cell">21</td>
+                        <td class="number-cell">110</td>
+                        <td class="number-cell">0.39</td>
+                        <td class="number-cell">0,0 %</td>
+                        <td class="number-cell">330</td>
+                    </tr>                </tbody>
+            </table>
+        </div>
+        
+        <!-- Section 2: Détail MP du mois -->
+        <div class="section">
+            <h2>Détail des Master Points - Mois Actuel (novembre 2025)</h2>
+            <div class="warning-box">
+                <strong>⚠️ ATTENTION :</strong> Ces Master Points sont une PRÉVISION pour le mois en cours (non complet). Les MP ne seront attribués qu'à la fin du mois.
+            </div>            <table>
+                <thead>
+                    <tr>
+                        <th>Joueur</th>
+                        <th>Total MP Mois</th>
+                        <th>PT (Mois)</th>
+                        <th>MP (PT)</th>
+                        <th>SR (Mois)</th>
+                        <th>MP (SR)</th>
+                        <th>PW (Mois)</th>
+                        <th>MP (PW)</th>
+                    </tr>
+                </thead>
+                <tbody>                    <tr>
+                        <td><strong>Sonia</strong></td>
+                        <td class="number-cell" style="font-weight: bold; color: #667eea;">39</td>
+                        <td class="number-cell">1380</td>
+                        <td class="number-cell">15</td>
+                        <td class="number-cell">276</td>
+                        <td class="number-cell">15</td>
+                        <td class="number-cell">20,0 %</td>
+                        <td class="number-cell">9</td>
+                    </tr>                    <tr>
+                        <td><strong>Jean</strong></td>
+                        <td class="number-cell" style="font-weight: bold; color: #667eea;">37</td>
+                        <td class="number-cell">1230</td>
+                        <td class="number-cell">13</td>
+                        <td class="number-cell">246</td>
+                        <td class="number-cell">13</td>
+                        <td class="number-cell">20,0 %</td>
+                        <td class="number-cell">11</td>
+                    </tr>                    <tr>
+                        <td><strong>Arsène</strong></td>
+                        <td class="number-cell" style="font-weight: bold; color: #667eea;">31</td>
+                        <td class="number-cell">940</td>
+                        <td class="number-cell">8</td>
+                        <td class="number-cell">188</td>
+                        <td class="number-cell">8</td>
+                        <td class="number-cell">30,0 %</td>
+                        <td class="number-cell">15</td>
+                    </tr>                    <tr>
+                        <td><strong>Martin</strong></td>
+                        <td class="number-cell" style="font-weight: bold; color: #667eea;">31</td>
+                        <td class="number-cell">1040</td>
+                        <td class="number-cell">9</td>
+                        <td class="number-cell">208</td>
+                        <td class="number-cell">9</td>
+                        <td class="number-cell">30,0 %</td>
+                        <td class="number-cell">13</td>
+                    </tr>                    <tr>
+                        <td><strong>Alain</strong></td>
+                        <td class="number-cell" style="font-weight: bold; color: #667eea;">30</td>
+                        <td class="number-cell">1180</td>
+                        <td class="number-cell">11</td>
+                        <td class="number-cell">236</td>
+                        <td class="number-cell">11</td>
+                        <td class="number-cell">0,0 %</td>
+                        <td class="number-cell">8</td>
+                    </tr>                </tbody>
+            </table>        </div>
+        
+        <!-- Section 3: Historique SR -->
+        <div class="section">
+            <h2>Historique du Skill Ratio (SR) Mensuel</h2>
+            <div class="info-box">
+                Le <strong>Skill Ratio (SR)</strong> représente votre score moyen par partie pour chaque mois.
+            </div><table><thead><tr><th>Joueur</th><th>2025-08</th><th>2025-09</th><th>2025-10</th><th>2025-11</th></tr></thead><tbody><tr><td><strong>Jean</strong></td><td class='number-cell'>177.5</td><td class='number-cell'>241.67</td><td class='number-cell'>215.62</td><td class='number-cell'>246</td></tr><tr><td><strong>Sonia</strong></td><td class='number-cell'>287.5</td><td class='number-cell'>275</td><td class='number-cell'>191.88</td><td class='number-cell'>276</td></tr><tr><td><strong>Alain</strong></td><td class='number-cell'>222.5</td><td class='number-cell'>288</td><td class='number-cell'>161.88</td><td class='number-cell'>236</td></tr><tr><td><strong>Arsène</strong></td><td class='number-cell'>56.67</td><td class='number-cell'>227.22</td><td class='number-cell'>191.82</td><td class='number-cell'>188</td></tr><tr><td><strong>Martin</strong></td><td class='number-cell'>267.5</td><td class='number-cell'>266.92</td><td class='number-cell'>220</td><td class='number-cell'>208</td></tr><tr><td><strong>Evelyne</strong></td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='number-cell'>110</td><td class='absent-cell'>-</td></tr></tbody></table>        </div>
+        
+        <!-- Section 4: Historique PT -->
+        <div class="section">
+            <h2>Historique des Points Totaux (PT) Mensuel</h2>
+            <div class="info-box">
+                Les <strong>Points Totaux (PT)</strong> représentent la somme de tous vos points pour chaque mois.
+            </div><table><thead><tr><th>Joueur</th><th>2025-08</th><th>2025-09</th><th>2025-10</th><th>2025-11</th></tr></thead><tbody><tr><td><strong>Jean</strong></td><td class='number-cell'>710</td><td class='number-cell'>4350</td><td class='number-cell'>3450</td><td class='number-cell'>1230</td></tr><tr><td><strong>Sonia</strong></td><td class='number-cell'>1150</td><td class='number-cell'>4950</td><td class='number-cell'>3070</td><td class='number-cell'>1380</td></tr><tr><td><strong>Alain</strong></td><td class='number-cell'>890</td><td class='number-cell'>4320</td><td class='number-cell'>2590</td><td class='number-cell'>1180</td></tr><tr><td><strong>Arsène</strong></td><td class='number-cell'>170</td><td class='number-cell'>4090</td><td class='number-cell'>2110</td><td class='number-cell'>940</td></tr><tr><td><strong>Martin</strong></td><td class='number-cell'>1070</td><td class='number-cell'>3470</td><td class='number-cell'>3520</td><td class='number-cell'>1040</td></tr><tr><td><strong>Evelyne</strong></td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='number-cell'>330</td><td class='absent-cell'>-</td></tr></tbody></table>        </div>
+        
+        <!-- Section 5: Historique MP -->
+        <div class="section">
+            <h2>Historique des Master Points (MP) Mensuel</h2>
+            <div class="info-box">
+                Les <strong>Master Points (MP)</strong> sont attribués à la fin de chaque mois selon votre performance dans 3 catégories (PT, SR, PW).
+            </div><table><thead><tr><th>Joueur</th><th>2025-08</th><th>2025-09</th><th>2025-10</th><th>2025-11</th></tr></thead><tbody><tr><td><strong>Jean</strong></td><td class='number-cell'>27</td><td class='number-cell'>33</td><td class='number-cell'>35</td><td class='number-cell'>0</td></tr><tr><td><strong>Sonia</strong></td><td class='number-cell'>45</td><td class='number-cell'>37</td><td class='number-cell'>33</td><td class='number-cell'>0</td></tr><tr><td><strong>Alain</strong></td><td class='number-cell'>33</td><td class='number-cell'>41</td><td class='number-cell'>25</td><td class='number-cell'>0</td></tr><tr><td><strong>Arsène</strong></td><td class='number-cell'>24</td><td class='number-cell'>25</td><td class='number-cell'>30</td><td class='number-cell'>0</td></tr><tr><td><strong>Martin</strong></td><td class='number-cell'>39</td><td class='number-cell'>32</td><td class='number-cell'>45</td><td class='number-cell'>0</td></tr><tr><td><strong>Evelyne</strong></td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='number-cell'>21</td><td class='absent-cell'>-</td></tr></tbody></table>        </div>
+        
+        <!-- Section 6: Comptabilité des scores -->
+        <div class="section">
+            <h2>Comptabilité Complète des Scores</h2>
+            <div class="info-box">
+                Historique de toutes les parties jouées avec les scores de chaque joueur.
+            </div><table><thead><tr><th>Partie #</th><th>Date</th><th>Nb Joueurs</th><th>Nb Tours</th><th>Jean</th><th>Sonia</th><th>Alain</th><th>Arsène</th><th>Martin</th><th>Evelyne</th><th>Gagnant</th></tr></thead><tbody><tr><td class='number-cell'>1</td><td>2025-08-30</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>270</td><td class='score-cell'>480</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='score-cell'>320</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (480)</td></tr><tr><td class='number-cell'>2</td><td>2025-08-30</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>140</td><td class='score-cell'>100</td><td class='score-cell'>210</td><td class='score-cell'>120</td><td class='score-cell'>160</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (210)</td></tr><tr><td class='number-cell'>3</td><td>2025-08-30</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>160</td><td class='score-cell'>230</td><td class='score-cell'>240</td><td class='score-cell'>120</td><td class='score-cell'>310</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (310)</td></tr><tr><td class='number-cell'>4</td><td>2025-08-30</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>140</td><td class='score-cell'>340</td><td class='score-cell'>190</td><td class='score-cell'>-70</td><td class='score-cell'>280</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (340)</td></tr><tr><td class='number-cell'>5</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>440</td><td class='score-cell'>200</td><td class='score-cell'>250</td><td class='score-cell'>260</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (440)</td></tr><tr><td class='number-cell'>6</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>260</td><td class='score-cell'>290</td><td class='score-cell'>380</td><td class='score-cell'>0</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (380)</td></tr><tr><td class='number-cell'>7</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>260</td><td class='score-cell'>300</td><td class='score-cell'>370</td><td class='score-cell'>320</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (370)</td></tr><tr><td class='number-cell'>8</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>310</td><td class='score-cell'>360</td><td class='score-cell'>310</td><td class='score-cell'>400</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (400)</td></tr><tr><td class='number-cell'>9</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>370</td><td class='score-cell'>520</td><td class='score-cell'>550</td><td class='score-cell'>360</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (550)</td></tr><tr><td class='number-cell'>10</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>220</td><td class='score-cell'>330</td><td class='score-cell'>360</td><td class='score-cell'>120</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (360)</td></tr><tr><td class='number-cell'>11</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>120</td><td class='score-cell'>170</td><td class='score-cell'>270</td><td class='score-cell'>150</td><td class='score-cell'>210</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (270)</td></tr><tr><td class='number-cell'>12</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>100</td><td class='score-cell'>240</td><td class='score-cell'>270</td><td class='score-cell'>70</td><td class='score-cell'>170</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (270)</td></tr><tr><td class='number-cell'>13</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>370</td><td class='score-cell'>320</td><td class='score-cell'>330</td><td class='score-cell'>130</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (370)</td></tr><tr><td class='number-cell'>14</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>120</td><td class='score-cell'>90</td><td class='score-cell'>270</td><td class='score-cell'>170</td><td class='score-cell'>150</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (270)</td></tr><tr><td class='number-cell'>15</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>290</td><td class='score-cell'>100</td><td class='score-cell'>230</td><td class='score-cell'>300</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (300)</td></tr><tr><td class='number-cell'>16</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>40</td><td class='score-cell'>420</td><td class='score-cell'>170</td><td class='score-cell'>240</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (420)</td></tr><tr><td class='number-cell'>17</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>230</td><td class='score-cell'>160</td><td class='score-cell'>170</td><td class='score-cell'>150</td><td class='score-cell'>200</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (230)</td></tr><tr><td class='number-cell'>18</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>210</td><td class='score-cell'>230</td><td class='score-cell'>210</td><td class='score-cell'>190</td><td class='score-cell'>340</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (340)</td></tr><tr><td class='number-cell'>19</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>240</td><td class='score-cell'>220</td><td class='score-cell'>180</td><td class='score-cell'>260</td><td class='score-cell'>300</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (300)</td></tr><tr><td class='number-cell'>20</td><td>2025-09-26</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>250</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='score-cell'>380</td><td class='score-cell'>530</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (530)</td></tr><tr><td class='number-cell'>21</td><td>2025-09-26</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>220</td><td class='score-cell'>440</td><td class='absent-cell'>-</td><td class='score-cell'>140</td><td class='score-cell'>200</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (440)</td></tr><tr><td class='number-cell'>22</td><td>2025-09-26</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>300</td><td class='score-cell'>370</td><td class='absent-cell'>-</td><td class='score-cell'>450</td><td class='score-cell'>490</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (490)</td></tr><tr><td class='number-cell'>23</td><td>2025-10-04</td><td class='number-cell'>6</td><td class='number-cell'>10</td><td class='score-cell'>250</td><td class='score-cell'>90</td><td class='score-cell'>20</td><td class='score-cell'>160</td><td class='score-cell'>290</td><td class='score-cell'>90</td><td class='winner-cell'>Martin (290)</td></tr><tr><td class='number-cell'>24</td><td>2025-10-04</td><td class='number-cell'>6</td><td class='number-cell'>10</td><td class='score-cell'>150</td><td class='score-cell'>150</td><td class='score-cell'>120</td><td class='score-cell'>160</td><td class='score-cell'>220</td><td class='score-cell'>120</td><td class='winner-cell'>Martin (220)</td></tr><tr><td class='number-cell'>25</td><td>2025-10-04</td><td class='number-cell'>6</td><td class='number-cell'>10</td><td class='score-cell'>140</td><td class='score-cell'>190</td><td class='score-cell'>130</td><td class='score-cell'>240</td><td class='score-cell'>210</td><td class='score-cell'>120</td><td class='winner-cell'>Arsène (240)</td></tr><tr><td class='number-cell'>26</td><td>2025-10-04</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>210</td><td class='score-cell'>160</td><td class='score-cell'>330</td><td class='score-cell'>160</td><td class='score-cell'>160</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (330)</td></tr><tr><td class='number-cell'>27</td><td>2025-10-11</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>320</td><td class='score-cell'>80</td><td class='score-cell'>240</td><td class='absent-cell'>-</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (320)</td></tr><tr><td class='number-cell'>28</td><td>2025-10-11</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>320</td><td class='score-cell'>80</td><td class='score-cell'>240</td><td class='absent-cell'>-</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (320)</td></tr><tr><td class='number-cell'>29</td><td>2025-10-11</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>310</td><td class='score-cell'>250</td><td class='score-cell'>210</td><td class='absent-cell'>-</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (310)</td></tr><tr><td class='number-cell'>30</td><td>2025-10-11</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>210</td><td class='score-cell'>160</td><td class='score-cell'>160</td><td class='absent-cell'>-</td><td class='score-cell'>280</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (280)</td></tr><tr><td class='number-cell'>31</td><td>2025-10-18</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>200</td><td class='score-cell'>290</td><td class='score-cell'>80</td><td class='score-cell'>110</td><td class='score-cell'>290</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia, Martin (290)</td></tr><tr><td class='number-cell'>32</td><td>2025-10-18</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>220</td><td class='score-cell'>320</td><td class='score-cell'>90</td><td class='score-cell'>210</td><td class='score-cell'>80</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (320)</td></tr><tr><td class='number-cell'>33</td><td>2025-10-18</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>160</td><td class='score-cell'>260</td><td class='score-cell'>140</td><td class='score-cell'>110</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (260)</td></tr><tr><td class='number-cell'>34</td><td>2025-10-18</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>160</td><td class='score-cell'>180</td><td class='score-cell'>160</td><td class='score-cell'>250</td><td class='score-cell'>280</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (280)</td></tr><tr><td class='number-cell'>35</td><td>2025-10-25</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>200</td><td class='score-cell'>310</td><td class='score-cell'>110</td><td class='absent-cell'>-</td><td class='score-cell'>240</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (310)</td></tr><tr><td class='number-cell'>36</td><td>2025-10-25</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>200</td><td class='score-cell'>130</td><td class='score-cell'>270</td><td class='score-cell'>200</td><td class='score-cell'>290</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (290)</td></tr><tr><td class='number-cell'>37</td><td>2025-10-25</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>210</td><td class='score-cell'>220</td><td class='score-cell'>110</td><td class='score-cell'>270</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (270)</td></tr><tr><td class='number-cell'>38</td><td>2025-10-25</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>190</td><td class='score-cell'>200</td><td class='score-cell'>180</td><td class='score-cell'>240</td><td class='score-cell'>110</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (240)</td></tr><tr><td class='number-cell'>39</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>220</td><td class='score-cell'>220</td><td class='score-cell'>90</td><td class='score-cell'>100</td><td class='score-cell'>300</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (300)</td></tr><tr><td class='number-cell'>40</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>220</td><td class='score-cell'>350</td><td class='score-cell'>260</td><td class='score-cell'>370</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (370)</td></tr><tr><td class='number-cell'>41</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>260</td><td class='score-cell'>330</td><td class='score-cell'>310</td><td class='score-cell'>90</td><td class='score-cell'>160</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (330)</td></tr><tr><td class='number-cell'>42</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>170</td><td class='score-cell'>220</td><td class='score-cell'>190</td><td class='score-cell'>270</td><td class='score-cell'>270</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène, Martin (270)</td></tr><tr><td class='number-cell'>43</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>360</td><td class='score-cell'>260</td><td class='score-cell'>330</td><td class='score-cell'>110</td><td class='score-cell'>60</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (360)</td></tr></tbody></table>        </div>
+        
+        <div class="footer">
+            <p>🧙‍♂️ <strong>Wizard Ligue Tracker v5.1</strong> 🧙‍♀️</p>
+            <p>Document généré le <span class="timestamp">dimanche 2 novembre 2025 à 13:08:01</span></p>
+        </div>
+    </div>
+</body>
+</html>
