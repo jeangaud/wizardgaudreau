@@ -258,12 +258,99 @@
             color: #ccc;
             font-weight: bold;
         }
+        
+        /* Tooltips pour les colonnes */
+        .tooltip-header {
+            position: relative;
+            cursor: help;
+        }
+        
+        .tooltip-header:hover {
+            color: #764ba2;
+        }
+        
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-block;
+            border-bottom: 2px dotted #667eea;
+        }
+        
+        .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            width: 280px;
+            max-width: 90vw;
+            background-color: #fffbcc;
+            color: #333;
+            text-align: left;
+            border-radius: 10px;
+            padding: 12px 15px;
+            position: absolute;
+            z-index: 1000;
+            top: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 0.9em;
+            line-height: 1.5;
+            font-weight: normal;
+            text-transform: none;
+            letter-spacing: normal;
+            white-space: normal;
+        }
+        
+        /* Flèche pointant vers le haut (car tooltip est en bas) */
+        .tooltip-text::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: transparent transparent #fffbcc transparent;
+        }
+        
+        /* Gestion des tooltips sur les bords gauche et droit */
+        .tooltip-header:first-child .tooltip-text,
+        .tooltip-header:nth-child(2) .tooltip-text,
+        .tooltip-header:nth-child(3) .tooltip-text {
+            left: 0;
+            transform: translateX(0);
+        }
+        
+        .tooltip-header:first-child .tooltip-text::before,
+        .tooltip-header:nth-child(2) .tooltip-text::before,
+        .tooltip-header:nth-child(3) .tooltip-text::before {
+            left: 20%;
+        }
+        
+        .tooltip-header:nth-last-child(1) .tooltip-text,
+        .tooltip-header:nth-last-child(2) .tooltip-text {
+            left: auto;
+            right: 0;
+            transform: translateX(0);
+        }
+        
+        .tooltip-header:nth-last-child(1) .tooltip-text::before,
+        .tooltip-header:nth-last-child(2) .tooltip-text::before {
+            left: auto;
+            right: 20%;
+            margin-left: 0;
+            margin-right: -8px;
+        }
+        
+        .tooltip-wrapper:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🧙‍♂️ Wizard Ligue - Tableaux de Pointage 🧙‍♀️</h1>
-        <div class="subtitle">Généré le dimanche 2 novembre 2025 à 20:02</div>
+        <div class="subtitle">Généré le dimanche 2 novembre 2025 à 20:30</div>
         
         <!-- Section 1: Classement -->
         <div class="section">
@@ -351,13 +438,48 @@
                 <thead>
                     <tr>
                         <th>Joueur</th>
-                        <th>Total MP Mois</th>
-                        <th>PT (Mois)</th>
-                        <th>MP (PT)</th>
-                        <th>SR (Mois)</th>
-                        <th>MP (SR)</th>
-                        <th>PW (Mois)</th>
-                        <th>MP (PW)</th>
+                        <th class="tooltip-header">
+                            <div class="tooltip-wrapper">
+                                Total MP Mois
+                                <span class="tooltip-text">Somme des Master Points gagnés ce mois dans les 3 catégories (PT + SR + PW)</span>
+                            </div>
+                        </th>
+                        <th class="tooltip-header">
+                            <div class="tooltip-wrapper">
+                                PT (Mois)
+                                <span class="tooltip-text">Points Totaux : Somme de tous vos points accumulés durant le mois</span>
+                            </div>
+                        </th>
+                        <th class="tooltip-header">
+                            <div class="tooltip-wrapper">
+                                MP (PT)
+                                <span class="tooltip-text">Master Points gagnés selon votre classement en Points Totaux (1er=15 MP, 2e=13 MP, etc.)</span>
+                            </div>
+                        </th>
+                        <th class="tooltip-header">
+                            <div class="tooltip-wrapper">
+                                SR (Mois)
+                                <span class="tooltip-text">Skill Ratio : Moyenne de vos points par partie jouée durant le mois</span>
+                            </div>
+                        </th>
+                        <th class="tooltip-header">
+                            <div class="tooltip-wrapper">
+                                MP (SR)
+                                <span class="tooltip-text">Master Points gagnés selon votre classement en Skill Ratio (1er=15 MP, 2e=13 MP, etc.)</span>
+                            </div>
+                        </th>
+                        <th class="tooltip-header">
+                            <div class="tooltip-wrapper">
+                                PW (Mois)
+                                <span class="tooltip-text">Pourcentage de Victoires : Ratio de parties gagnées sur le total de parties jouées ce mois</span>
+                            </div>
+                        </th>
+                        <th class="tooltip-header">
+                            <div class="tooltip-wrapper">
+                                MP (PW)
+                                <span class="tooltip-text">Master Points gagnés selon votre classement en Pourcentage de Victoires (1er=15 MP, 2e=13 MP, etc.)</span>
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>                    <tr>
@@ -446,7 +568,7 @@
         
         <div class="footer">
             <p>🧙‍♂️ <strong>Wizard Ligue Tracker v5.4</strong> 🧙‍♀️</p>
-            <p>Document généré le <span class="timestamp">dimanche 2 novembre 2025 à 20:02:17</span></p>
+            <p>Document généré le <span class="timestamp">dimanche 2 novembre 2025 à 20:30:08</span></p>
         </div>
     </div>
 </body>
