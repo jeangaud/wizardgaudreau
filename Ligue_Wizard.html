@@ -94,9 +94,18 @@
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             border-radius: 8px;
-            overflow: hidden;
+            /* === MODIFICATION v6.3 === */
+            /* overflow: hidden; */ /* <- Cette ligne est la cause du problème de clipping */
+            /* === FIN MODIFICATION v6.3 === */
         }
         
+        /* === MODIFICATION v6.3 (Fix coins arrondis) === */
+        thead tr:first-child th:first-child { border-top-left-radius: 8px; }
+        thead tr:first-child th:last-child { border-top-right-radius: 8px; }
+        tbody tr:last-child td:first-child { border-bottom-left-radius: 8px; }
+        tbody tr:last-child td:last-child { border-bottom-right-radius: 8px; }
+        /* === FIN MODIFICATION v6.3 === */
+
         thead {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -118,15 +127,19 @@
             color: #000;
         }
         
+        /* === MODIFICATION v6.4 (Fix z-index) === */
         tbody tr {
             transition: all 0.3s ease;
+            position: relative; /* <-- AJOUT: Crée un 'stacking context' */
         }
         
         tbody tr:hover {
             background: #f8f9ff;
             transform: scale(1.01);
             box-shadow: 0 2px 5px rgba(102, 126, 234, 0.2);
+            z-index: 50; /* <-- AJOUT: Met la rangée au-dessus des autres */
         }
+        /* === FIN MODIFICATION v6.4 === */
         
         tbody tr:nth-child(even) {
             background: #fafbff;
@@ -369,12 +382,67 @@
             visibility: visible;
             opacity: 1;
         }
+
+        /* === MODIFICATION v6.3 (Infobulle SR10) === */
+        .tooltip-list {
+            visibility: hidden;
+            opacity: 0;
+            width: 360px; /* <- Augmentation de la largeur */
+            max-width: 90vw;
+            background-color: #fffbcc;
+            color: #333;
+            text-align: left;
+            border-radius: 10px;
+            padding: 12px 15px;
+            position: absolute;
+            z-index: 1000;
+            top: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 0.9em;
+            line-height: 1.6;
+            font-weight: normal;
+            text-transform: none;
+            letter-spacing: normal;
+            white-space: pre-wrap; /* Clé pour les sauts de ligne */
+            font-family: 'Courier New', monospace; /* Police mono-espacée */
+        }
+        
+        .tooltip-list::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: transparent transparent #fffbcc transparent;
+        }
+        
+        .tooltip-wrapper:hover .tooltip-list {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Fix pour les tooltips en bas de tableau (pour qu'ils s'ouvrent vers le haut) */
+        .ranking-table tbody tr:nth-last-child(-n+3) .tooltip-list {
+            top: auto;
+            bottom: 120%; /* Apparaît au-dessus */
+        }
+        .ranking-table tbody tr:nth-last-child(-n+3) .tooltip-list::before {
+            bottom: auto;
+            top: 100%; /* Flèche en bas */
+            border-color: #fffbcc transparent transparent transparent; /* Flèche pointe en bas */
+        }
+        /* === FIN MODIFICATION v6.3 === */
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🧙‍♂️ Wizard Ligue - Tableaux de Pointage 🧙‍♀️</h1>
-        <div class="subtitle">Généré le vendredi 7 novembre 2025 à 01:03</div>
+        <div class="subtitle">Généré le vendredi 7 novembre 2025 à 01:37</div>
         
         <div class="section">
             <h2>Classement Général de la Ligue</h2>
@@ -399,8 +467,33 @@
                         <td><strong>Sonia</strong></td>
                         <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>141.41</strong></td>
                         <td class="number-cell">115</td>
-                        <td class="number-cell">20.82</td>
-                        <td class="number-cell">5.59</td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                20.82
+                                <span class="tooltip-list">2025-11-01 (5 j) : 350 / 12 = 29,17
+2025-11-01 (5 j) : 220 / 12 = 18,33
+2025-11-01 (5 j) : 330 / 12 = 27,50
+2025-11-01 (5 j) : 260 / 12 = 21,67
+2025-11-01 (5 j) : 220 / 12 = 18,33
+2025-10-25 (5 j) : 130 / 12 = 10,83
+2025-10-25 (4 j) : 310 / 15 = 20,67
+2025-10-25 (5 j) : 200 / 12 = 16,67
+2025-10-25 (5 j) : 220 / 12 = 18,33
+2025-10-18 (5 j) : 320 / 12 = 26,67
+---
+Moyenne = 20.82</span>
+                            </div>
+                        </td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                5.59
+                                <span class="tooltip-list">Formule: (Nb Parties / Diviseur) * Multipl.
+---
+(43 / 5) * 0.65 = 5.59</span>
+                            </div>
+                        </td>
                         <td class="number-cell">19,8 %</td>
                         <td class="number-cell">10550</td>
                     </tr>                    <tr>
@@ -408,8 +501,33 @@
                         <td><strong>Martin</strong></td>
                         <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>136.79</strong></td>
                         <td class="number-cell">116</td>
-                        <td class="number-cell">15.85</td>
-                        <td class="number-cell">4.94</td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                15.85
+                                <span class="tooltip-list">2025-11-01 (5 j) : 250 / 12 = 20,83
+2025-11-01 (5 j) : 300 / 12 = 25,00
+2025-11-01 (5 j) : 160 / 12 = 13,33
+2025-11-01 (5 j) :  60 / 12 =  5,00
+2025-11-01 (5 j) : 270 / 12 = 22,50
+2025-10-25 (5 j) : 290 / 12 = 24,17
+2025-10-25 (4 j) : 240 / 15 = 16,00
+2025-10-25 (5 j) : 110 / 12 =  9,17
+2025-10-25 (5 j) : 190 / 12 = 15,83
+2025-10-18 (5 j) :  80 / 12 =  6,67
+---
+Moyenne = 15.85</span>
+                            </div>
+                        </td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                4.94
+                                <span class="tooltip-list">Formule: (Nb Parties / Diviseur) * Multipl.
+---
+(38 / 5) * 0.65 = 4.94</span>
+                            </div>
+                        </td>
                         <td class="number-cell">31,6 %</td>
                         <td class="number-cell">9100</td>
                     </tr>                    <tr>
@@ -417,8 +535,33 @@
                         <td><strong>Alain</strong></td>
                         <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>120.18</strong></td>
                         <td class="number-cell">99</td>
-                        <td class="number-cell">15.98</td>
-                        <td class="number-cell">5.20</td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                15.98
+                                <span class="tooltip-list">2025-11-01 (5 j) : 260 / 12 = 21,67
+2025-11-01 (5 j) :  90 / 12 =  7,50
+2025-11-01 (5 j) : 310 / 12 = 25,83
+2025-11-01 (5 j) : 330 / 12 = 27,50
+2025-11-01 (5 j) : 190 / 12 = 15,83
+2025-10-25 (5 j) : 270 / 12 = 22,50
+2025-10-25 (4 j) : 110 / 15 =  7,33
+2025-10-25 (5 j) : 180 / 12 = 15,00
+2025-10-25 (5 j) : 110 / 12 =  9,17
+2025-10-18 (5 j) :  90 / 12 =  7,50
+---
+Moyenne = 15.98</span>
+                            </div>
+                        </td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                5.20
+                                <span class="tooltip-list">Formule: (Nb Parties / Diviseur) * Multipl.
+---
+(40 / 5) * 0.65 = 5.20</span>
+                            </div>
+                        </td>
                         <td class="number-cell">22,5 %</td>
                         <td class="number-cell">8980</td>
                     </tr>                    <tr>
@@ -426,8 +569,33 @@
                         <td><strong>Jean</strong></td>
                         <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>119.01</strong></td>
                         <td class="number-cell">95</td>
-                        <td class="number-cell">18.42</td>
-                        <td class="number-cell">5.59</td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                18.42
+                                <span class="tooltip-list">2025-11-01 (5 j) : 220 / 12 = 18,33
+2025-11-01 (5 j) : 220 / 12 = 18,33
+2025-11-01 (5 j) : 260 / 12 = 21,67
+2025-11-01 (5 j) : 360 / 12 = 30,00
+2025-11-01 (5 j) : 170 / 12 = 14,17
+2025-10-25 (5 j) : 200 / 12 = 16,67
+2025-10-25 (4 j) : 200 / 15 = 13,33
+2025-10-25 (5 j) : 190 / 12 = 15,83
+2025-10-25 (5 j) : 210 / 12 = 17,50
+2025-10-18 (5 j) : 220 / 12 = 18,33
+---
+Moyenne = 18.42</span>
+                            </div>
+                        </td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                5.59
+                                <span class="tooltip-list">Formule: (Nb Parties / Diviseur) * Multipl.
+---
+(43 / 5) * 0.65 = 5.59</span>
+                            </div>
+                        </td>
                         <td class="number-cell">16,3 %</td>
                         <td class="number-cell">9740</td>
                     </tr>                    <tr>
@@ -435,8 +603,33 @@
                         <td><strong>Arsène</strong></td>
                         <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>100.23</strong></td>
                         <td class="number-cell">79</td>
-                        <td class="number-cell">16.42</td>
-                        <td class="number-cell">4.81</td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                16.42
+                                <span class="tooltip-list">2025-11-01 (5 j) : 370 / 12 = 30,83
+2025-11-01 (5 j) : 100 / 12 =  8,33
+2025-11-01 (5 j) :  90 / 12 =  7,50
+2025-11-01 (5 j) : 110 / 12 =  9,17
+2025-11-01 (5 j) : 270 / 12 = 22,50
+2025-10-25 (5 j) : 200 / 12 = 16,67
+2025-10-25 (5 j) : 240 / 12 = 20,00
+2025-10-25 (5 j) : 270 / 12 = 22,50
+2025-10-18 (5 j) : 210 / 12 = 17,50
+2025-10-18 (5 j) : 110 / 12 =  9,17
+---
+Moyenne = 16.42</span>
+                            </div>
+                        </td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                4.81
+                                <span class="tooltip-list">Formule: (Nb Parties / Diviseur) * Multipl.
+---
+(37 / 5) * 0.65 = 4.81</span>
+                            </div>
+                        </td>
                         <td class="number-cell">17,6 %</td>
                         <td class="number-cell">7310</td>
                     </tr>                    <tr>
@@ -444,8 +637,26 @@
                         <td><strong>Evelyne</strong></td>
                         <td class="number-cell" style="font-size: 1.2em; color: #000;"><strong>32.39</strong></td>
                         <td class="number-cell">21</td>
-                        <td class="number-cell">11</td>
-                        <td class="number-cell">0.39</td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                11
+                                <span class="tooltip-list">2025-10-04 (6 j) : 120 / 10 = 12,00
+2025-10-04 (6 j) :  90 / 10 =  9,00
+2025-10-04 (6 j) : 120 / 10 = 12,00
+---
+Moyenne = 11</span>
+                            </div>
+                        </td>
+                        
+                        <td class="number-cell">
+                            <div class="tooltip-wrapper" style="border-bottom: 2px dotted #667eea; cursor: help;">
+                                0.39
+                                <span class="tooltip-list">Formule: (Nb Parties / Diviseur) * Multipl.
+---
+(3 / 5) * 0.65 = 0.39</span>
+                            </div>
+                        </td>
                         <td class="number-cell">0,0 %</td>
                         <td class="number-cell">330</td>
                     </tr>                </tbody>
@@ -584,8 +795,8 @@
             </div><table><thead><tr><th>Partie #</th><th>Date</th><th>Nb Joueurs</th><th>Nb Tours</th><th>Jean</th><th>Sonia</th><th>Alain</th><th>Arsène</th><th>Martin</th><th>Evelyne</th><th>Gagnant</th></tr></thead><tbody><tr><td class='number-cell'>1</td><td>2025-08-30</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>270</td><td class='score-cell'>480</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='score-cell'>320</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (480)</td></tr><tr><td class='number-cell'>2</td><td>2025-08-30</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>140</td><td class='score-cell'>100</td><td class='score-cell'>210</td><td class='score-cell'>120</td><td class='score-cell'>160</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (210)</td></tr><tr><td class='number-cell'>3</td><td>2025-08-30</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>160</td><td class='score-cell'>230</td><td class='score-cell'>240</td><td class='score-cell'>120</td><td class='score-cell'>310</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (310)</td></tr><tr><td class='number-cell'>4</td><td>2025-08-30</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>140</td><td class='score-cell'>340</td><td class='score-cell'>190</td><td class='score-cell'>-70</td><td class='score-cell'>280</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (340)</td></tr><tr><td class='number-cell'>5</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>440</td><td class='score-cell'>200</td><td class='score-cell'>250</td><td class='score-cell'>260</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (440)</td></tr><tr><td class='number-cell'>6</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>260</td><td class='score-cell'>290</td><td class='score-cell'>380</td><td class='score-cell'>0</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (380)</td></tr><tr><td class='number-cell'>7</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>260</td><td class='score-cell'>300</td><td class='score-cell'>370</td><td class='score-cell'>320</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (370)</td></tr><tr><td class='number-cell'>8</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>310</td><td class='score-cell'>360</td><td class='score-cell'>310</td><td class='score-cell'>400</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (400)</td></tr><tr><td class='number-cell'>9</td><td>2025-09-06</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>370</td><td class='score-cell'>520</td><td class='score-cell'>550</td><td class='score-cell'>360</td><td class='absent-cell'>-</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (550)</td></tr><tr><td class='number-cell'>10</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>220</td><td class='score-cell'>330</td><td class='score-cell'>360</td><td class='score-cell'>120</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (360)</td></tr><tr><td class='number-cell'>11</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>120</td><td class='score-cell'>170</td><td class='score-cell'>270</td><td class='score-cell'>150</td><td class='score-cell'>210</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (270)</td></tr><tr><td class='number-cell'>12</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>100</td><td class='score-cell'>240</td><td class='score-cell'>270</td><td class='score-cell'>70</td><td class='score-cell'>170</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (270)</td></tr><tr><td class='number-cell'>13</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>370</td><td class='score-cell'>320</td><td class='score-cell'>330</td><td class='score-cell'>130</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (370)</td></tr><tr><td class='number-cell'>14</td><td>2025-09-13</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>120</td><td class='score-cell'>90</td><td class='score-cell'>270</td><td class='score-cell'>170</td><td class='score-cell'>150</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (270)</td></tr><tr><td class='number-cell'>15</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>290</td><td class='score-cell'>100</td><td class='score-cell'>230</td><td class='score-cell'>300</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (300)</td></tr><tr><td class='number-cell'>16</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>40</td><td class='score-cell'>420</td><td class='score-cell'>170</td><td class='score-cell'>240</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (420)</td></tr><tr><td class='number-cell'>17</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>230</td><td class='score-cell'>160</td><td class='score-cell'>170</td><td class='score-cell'>150</td><td class='score-cell'>200</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (230)</td></tr><tr><td class='number-cell'>18</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>210</td><td class='score-cell'>230</td><td class='score-cell'>210</td><td class='score-cell'>190</td><td class='score-cell'>340</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (340)</td></tr><tr><td class='number-cell'>19</td><td>2025-09-20</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>240</td><td class='score-cell'>220</td><td class='score-cell'>180</td><td class='score-cell'>260</td><td class='score-cell'>300</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (300)</td></tr><tr><td class='number-cell'>20</td><td>2025-09-26</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>250</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='score-cell'>380</td><td class='score-cell'>530</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (530)</td></tr><tr><td class='number-cell'>21</td><td>2025-09-26</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>220</td><td class='score-cell'>440</td><td class='absent-cell'>-</td><td class='score-cell'>140</td><td class='score-cell'>200</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (440)</td></tr><tr><td class='number-cell'>22</td><td>2025-09-26</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>300</td><td class='score-cell'>370</td><td class='absent-cell'>-</td><td class='score-cell'>450</td><td class='score-cell'>490</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (490)</td></tr><tr><td class='number-cell'>23</td><td>2025-10-04</td><td class='number-cell'>6</td><td class='number-cell'>10</td><td class='score-cell'>250</td><td class='score-cell'>90</td><td class='score-cell'>20</td><td class='score-cell'>160</td><td class='score-cell'>290</td><td class='score-cell'>90</td><td class='winner-cell'>Martin (290)</td></tr><tr><td class='number-cell'>24</td><td>2025-10-04</td><td class='number-cell'>6</td><td class='number-cell'>10</td><td class='score-cell'>150</td><td class='score-cell'>150</td><td class='score-cell'>120</td><td class='score-cell'>160</td><td class='score-cell'>220</td><td class='score-cell'>120</td><td class='winner-cell'>Martin (220)</td></tr><tr><td class='number-cell'>25</td><td>2025-10-04</td><td class='number-cell'>6</td><td class='number-cell'>10</td><td class='score-cell'>140</td><td class='score-cell'>190</td><td class='score-cell'>130</td><td class='score-cell'>240</td><td class='score-cell'>210</td><td class='score-cell'>120</td><td class='winner-cell'>Arsène (240)</td></tr><tr><td class='number-cell'>26</td><td>2025-10-04</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>210</td><td class='score-cell'>160</td><td class='score-cell'>330</td><td class='score-cell'>160</td><td class='score-cell'>160</td><td class='absent-cell'>-</td><td class='winner-cell'>Alain (330)</td></tr><tr><td class='number-cell'>27</td><td>2025-10-11</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>320</td><td class='score-cell'>80</td><td class='score-cell'>240</td><td class='absent-cell'>-</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (320)</td></tr><tr><td class='number-cell'>28</td><td>2025-10-11</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>320</td><td class='score-cell'>80</td><td class='score-cell'>240</td><td class='absent-cell'>-</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (320)</td></tr><tr><td class='number-cell'>29</td><td>2025-10-11</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>310</td><td class='score-cell'>250</td><td class='score-cell'>210</td><td class='absent-cell'>-</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (310)</td></tr><tr><td class='number-cell'>30</td><td>2025-10-11</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>210</td><td class='score-cell'>160</td><td class='score-cell'>160</td><td class='absent-cell'>-</td><td class='score-cell'>280</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (280)</td></tr><tr><td class='number-cell'>31</td><td>2025-10-18</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>200</td><td class='score-cell'>290</td><td class='score-cell'>80</td><td class='score-cell'>110</td><td class='score-cell'>290</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia, Martin (290)</td></tr><tr><td class='number-cell'>32</td><td>2025-10-18</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>220</td><td class='score-cell'>320</td><td class='score-cell'>90</td><td class='score-cell'>210</td><td class='score-cell'>80</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (320)</td></tr><tr><td class='number-cell'>33</td><td>2025-10-18</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>160</td><td class='score-cell'>260</td><td class='score-cell'>140</td><td class='score-cell'>110</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (260)</td></tr><tr><td class='number-cell'>34</td><td>2025-10-18</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>160</td><td class='score-cell'>180</td><td class='score-cell'>160</td><td class='score-cell'>250</td><td class='score-cell'>280</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (280)</td></tr><tr><td class='number-cell'>35</td><td>2025-10-25</td><td class='number-cell'>4</td><td class='number-cell'>15</td><td class='score-cell'>200</td><td class='score-cell'>310</td><td class='score-cell'>110</td><td class='absent-cell'>-</td><td class='score-cell'>240</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (310)</td></tr><tr><td class='number-cell'>36</td><td>2025-10-25</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>200</td><td class='score-cell'>130</td><td class='score-cell'>270</td><td class='score-cell'>200</td><td class='score-cell'>290</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (290)</td></tr><tr><td class='number-cell'>37</td><td>2025-10-25</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>210</td><td class='score-cell'>220</td><td class='score-cell'>110</td><td class='score-cell'>270</td><td class='score-cell'>190</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (270)</td></tr><tr><td class='number-cell'>38</td><td>2025-10-25</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>190</td><td class='score-cell'>200</td><td class='score-cell'>180</td><td class='score-cell'>240</td><td class='score-cell'>110</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (240)</td></tr><tr><td class='number-cell'>39</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>220</td><td class='score-cell'>220</td><td class='score-cell'>90</td><td class='score-cell'>100</td><td class='score-cell'>300</td><td class='absent-cell'>-</td><td class='winner-cell'>Martin (300)</td></tr><tr><td class='number-cell'>40</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>220</td><td class='score-cell'>350</td><td class='score-cell'>260</td><td class='score-cell'>370</td><td class='score-cell'>250</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène (370)</td></tr><tr><td class='number-cell'>41</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>260</td><td class='score-cell'>330</td><td class='score-cell'>310</td><td class='score-cell'>90</td><td class='score-cell'>160</td><td class='absent-cell'>-</td><td class='winner-cell'>Sonia (330)</td></tr><tr><td class='number-cell'>42</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>170</td><td class='score-cell'>220</td><td class='score-cell'>190</td><td class='score-cell'>270</td><td class='score-cell'>270</td><td class='absent-cell'>-</td><td class='winner-cell'>Arsène, Martin (270)</td></tr><tr><td class='number-cell'>43</td><td>2025-11-01</td><td class='number-cell'>5</td><td class='number-cell'>12</td><td class='score-cell'>360</td><td class='score-cell'>260</td><td class='score-cell'>330</td><td class='score-cell'>110</td><td class='score-cell'>60</td><td class='absent-cell'>-</td><td class='winner-cell'>Jean (360)</td></tr></tbody></table>        </div>
         
         <div class="footer">
-            <p>🧙‍♂️ <strong>Wizard Ligue Tracker v6.1</strong> 🧙‍♀️</p>
-            <p>Document généré le <span class="timestamp">vendredi 7 novembre 2025 à 01:03:09</span></p>
+            <p>🧙‍♂️ <strong>Wizard Ligue Tracker v6.5</strong> 🧙‍♀️</p>
+            <p>Document généré le <span class="timestamp">vendredi 7 novembre 2025 à 01:37:13</span></p>
         </div>
     </div>
 </body>
